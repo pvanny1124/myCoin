@@ -10,11 +10,22 @@ class Block {
         this.data = data;
         this.timestamp = timestamp;
         this.index = index;
-        this.previousHash = this.calculateHash();
+        this.previousHash = previousHash;
+        this.hash = this.calculateHash();
+        this.nonce = 0; //random number that doesn't have anything to do with our block
+        //need nonce because we need to change the hash in the while loop of mineBlock
     }
     
     calculateHash(){
-        return SHA256(this.index + this.timestamp + this.previousHash + JSON.stringify(this.data)).toString();
+        return SHA256(this.index + this.timestamp + this.previousHash + JSON.stringify(this.data) + this.nonce).toString();
+    }
+    
+    mineBlock(difficulty){
+        while(this.hash.substring(0, difficulty) !== Array(difficulty + 1).join("0")){
+            this.nonce++;
+            this.hash = this.calculateHash()
+        }
+            console.log("Block Mined: " + this.hash);
     }
     
 }
@@ -23,6 +34,7 @@ class Blockchain {
     
     constructor() {
         this.chain = [this.createGenesisBlock()]
+        this.difficulty = 4;
     }
     
     createGenesisBlock(){
@@ -35,7 +47,7 @@ class Blockchain {
     
     addBlock(newBlock){
         newBlock.previousHash = this.getLatestBlock().hash;
-        newBlock.hash = newBlock.calculateHash();
+        newBlock.mineBlock(this.difficulty) ;
         this.chain.push(newBlock);
     }
     
@@ -59,15 +71,23 @@ class Blockchain {
 }
 
 let myCoin = new Blockchain();
+
+//Increase the difficulty to make it harder for a spammer to generate blocks.
+
+console.log('Mining block 1...');
 myCoin.addBlock(new Block(1, '10/3/2018', {amount: 4}));
+
+console.log('Mining block 2...')
 myCoin.addBlock(new Block(1, '10/5/2018', {amount: 10}));
+
+console.log('Mining block 3...')
 myCoin.addBlock(new Block(1, '10/7/2018', {amount: 15}));
 
 
 
 //Ways to tamper with block hashes
-myCoin.chain[1].data = {amount: 100};
-myCoin.chain[1].hash = myCoin.chain[1].calculateHash();
+// myCoin.chain[1].data = {amount: 100};
+// myCoin.chain[1].hash = myCoin.chain[1].calculateHash();
 
 console.log('Is blockhain valid? ' + myCoin.isChainValid());
 
