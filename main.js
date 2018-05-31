@@ -58,17 +58,17 @@ class Blockchain {
     
 }
 
-let JScoin = new Blockchain();
-JScoin.addBlock(new Block(1, '10/3/2018', {amount: 4}));
-JScoin.addBlock(new Block(1, '10/5/2018', {amount: 10}));
-JScoin.addBlock(new Block(1, '10/7/2018', {amount: 15}));
+let myCoin = new Blockchain();
+myCoin.addBlock(new Block(1, '10/3/2018', {amount: 4}));
+myCoin.addBlock(new Block(1, '10/5/2018', {amount: 10}));
+myCoin.addBlock(new Block(1, '10/7/2018', {amount: 15}));
 
 
 
 //Ways to tamper with block hashes
-JScoin.chain[1].data = {amount: 100};
-JScoin.chain[1].hash = JScoin.chain[1].calculateHash();
+myCoin.chain[1].data = {amount: 100};
+myCoin.chain[1].hash = myCoin.chain[1].calculateHash();
 
-console.log('Is blockhain valid? ' + JScoin.isChainValid());
+console.log('Is blockhain valid? ' + myCoin.isChainValid());
 
-console.log(JSON.stringify(JScoin, null, 4));
+console.log(JSON.stringify(myCoin, null, 4));
